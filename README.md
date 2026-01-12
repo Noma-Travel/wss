@@ -73,3 +73,21 @@ When done, deactivate the virtual environment:
 deactivate
 ```
 
+
+# Configuration
+
+In order to use this server, you need to modify your configuration files
+
+
+In console/.env.development
+
+VITE_WEBSOCKET_URL='http://0.0.0.0:8080'
+
+
+
+In system/env_config 
+
+WEBSOCKET_CONNECTIONS='http://0.0.0.0:8080/send_to_client'
+
+
+
