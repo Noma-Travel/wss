@@ -87,7 +87,7 @@ VITE_WEBSOCKET_URL='http://0.0.0.0:8080'
 
 
 
-In system/env_config 
+In system/env_config.py 
 
 WEBSOCKET_CONNECTIONS='http://0.0.0.0:8080/send_to_client'
 
