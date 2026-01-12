@@ -6,24 +6,26 @@ IMPORTANT: This is not a production grade WSS, you should only use it to run a W
 This WSS emulates the functionality of the AWS API Gateway WebSocket Service.
 
 Let’s assume:
-	•	WebSocket Dev Service runs at ws://localhost:8080
-	•	Local backend API runs at http://localhost:5001
-	•	The backend has an endpoint like: POST /ws-ingest
-	•	The WS dev service exposes an endpoint: POST /send_to_client
+
+- WebSocket Dev Service runs at ws://localhost:8080
+- Local backend API runs at http://localhost:5001
+- The backend has an endpoint like: POST /ws-ingest
+- The WS dev service exposes an endpoint: POST /send_to_client
 
 Flow:
-	1.	Client connects → WS service generates connection_id, stores it in a dict, and (optionally) sends it to the client.
-	2.	Client sends message → WS service:
-	•	Wraps it into a payload: { connection_id, body, ... }
-	•	POSTs it to http://localhost:5001/ws-ingest
-	3.	Backend processes that, then when it wants to reply:
-	•	POSTs to http://127.0.0.1:8080/send_to_client with:
 
-	```
-	{ "connection_id": "<id>", "payload": { ... } }
-	```
+1. Client connects → WS service generates connection_id, stores it in a dict, and (optionally) sends it to the client.
+2.	Client sends message → WS service:
+	- Wraps it into a payload: { connection_id, body, ... }
+	- POSTs it to http://localhost:5001/ws-ingest
+3.	Backend processes that, then when it wants to reply:
+	- POSTs to http://127.0.0.1:8080/send_to_client with:
 
-	4.	WS service looks up that connection_id in the dict and send_text() back over the WebSocket.
+```
+{ "connection_id": "<id>", "payload": { ... } }
+```
+
+4.	WS service looks up that connection_id in the dict and send_text() back over the WebSocket.
 
 
 ## FE Implementation
