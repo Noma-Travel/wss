@@ -19,11 +19,11 @@ Flow:
 	3.	Backend processes that, then when it wants to reply:
 	•	POSTs to http://127.0.0.1:8080/send_to_client with:
 
-	```
-	{ "connection_id": "<id>", "payload": { ... } }
-	```
+```
+{ "connection_id": "<id>", "payload": { ... } }
+```
 
-	4.	WS service looks up that connection_id in the dict and send_text() back over the WebSocket.
+4.	WS service looks up that connection_id in the dict and send_text() back over the WebSocket.
 
 
 ## FE Implementation
@@ -102,7 +102,7 @@ VITE_WEBSOCKET_URL='ws://127.0.0.1:8080/ws'
 
 
 
-In system/env_config 
+In system/env_config.py 
 
 WEBSOCKET_CONNECTIONS='http://127.0.0.1:8080/send_to_client'
 
