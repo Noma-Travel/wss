@@ -1,4 +1,36 @@
 # dev_ws_service.py
+# IMPORTANT: Monkey patching must be called before importing Flask
+# This patches standard library modules to work with green threads
+import sys
+import platform
+
+# Detect Windows and use appropriate server
+IS_WINDOWS = platform.system() == 'Windows'
+
+if IS_WINDOWS:
+    # On Windows, use gevent instead of eventlet (better Windows support)
+    try:
+        import gevent
+        from gevent import monkey
+        monkey.patch_all()
+        USE_GEVENT = True
+    except ImportError:
+        print("Warning: gevent not installed. Install it with: pip install gevent")
+        print("Attempting to use eventlet (may have issues on Windows)...")
+        import eventlet
+        try:
+            eventlet.monkey_patch()
+            USE_GEVENT = False
+        except Exception as e:
+            print(f"Error: eventlet monkey patching failed on Windows: {e}")
+            print("Please install gevent: pip install gevent")
+            sys.exit(1)
+else:
+    # On Unix-like systems, use eventlet (simpler and more compatible)
+    import eventlet
+    eventlet.monkey_patch()
+    USE_GEVENT = False
+
 import uuid
 import json
 from typing import Dict
@@ -108,12 +140,18 @@ def send_to_client():
 
 if __name__ == "__main__":
     # flask-sock works with eventlet or gevent
-    # Using eventlet for WebSocket support (simpler and more compatible)
-    import eventlet
-    eventlet.monkey_patch()
-    
-    from eventlet import wsgi
-    import eventlet.wsgi
-    
-    print("WebSocket service running on ws://0.0.0.0:8080")
-    wsgi.server(eventlet.listen(('0.0.0.0', 8080)), app)
+    if USE_GEVENT:
+        # Use gevent for Windows compatibility
+        from gevent import pywsgi
+        
+        print("WebSocket service running on ws://0.0.0.0:8080 (using gevent)")
+        print("Connect from browser using: ws://127.0.0.1:8080/ws")
+        server = pywsgi.WSGIServer(('0.0.0.0', 8080), app)
+        server.serve_forever()
+    else:
+        # Use eventlet for Unix-like systems
+        from eventlet import wsgi
+        
+        print("WebSocket service running on ws://0.0.0.0:8080 (using eventlet)")
+        print("Connect from browser using: ws://127.0.0.1:8080/ws")
+        wsgi.server(eventlet.listen(('0.0.0.0', 8080)), app)
