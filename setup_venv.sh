@@ -17,6 +17,7 @@ source wss-venv/bin/activate
 echo "Installing dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
+pip install --upgrade pip
 
 echo "Setup complete! To activate the virtual environment, run:"
 echo "  source wss-venv/bin/activate"
